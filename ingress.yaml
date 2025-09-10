@@ -29,6 +29,7 @@ metadata:
   namespace: terotam
   annotations:
     # ALB general settings
+    alb.ingress.kubernetes.io/load-balancer-name: microservices-alb
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/backend-protocol: HTTP
@@ -39,6 +40,11 @@ metadata:
     alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS13-1-2-2021-06
     alb.ingress.kubernetes.io/healthcheck-path: /
     alb.ingress.kubernetes.io/success-codes: '200,404'
+
+    alb.ingress.kubernetes.io/load-balancer-attributes: |
+      idle_timeout.timeout_seconds=120,
+      routing.http2.enabled=true,
+      deletion_protection.enabled=false
 
    
     # Define default action to forward to "main" service
