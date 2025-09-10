@@ -1,0 +1,8 @@
+Case 2: You forget to update package-lock.json
+If you only edit package.json (manually or by mistake),
+npm ci will fail because package.json and package-lock.json are out of sync.
+That’s by design → ensures deterministic installs.
+✅ Fix: Always run npm install (locally) after adding/removing packages so package-lock.json stays updated.
+ 
+we need to one time use this command 
+ 
