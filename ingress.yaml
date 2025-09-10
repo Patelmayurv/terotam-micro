@@ -1,0 +1,215 @@
+---
+# IngressClassParams - defines settings for the ALB
+apiVersion: eks.amazonaws.com/v1
+kind: IngressClassParams
+metadata:
+  name: eks-auto-alb
+spec:
+  scheme: internet-facing
+
+---
+# IngressClass - points to the ALB controller and the params above
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: alb
+spec:
+  controller: eks.amazonaws.com/alb
+  parameters:
+    apiGroup: eks.amazonaws.com
+    kind: IngressClassParams
+    name: eks-auto-alb
+
+---
+# ALB Ingress resource for terotam services
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: terotam-services
+  namespace: terotam
+  annotations:
+    # ALB general settings
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/backend-protocol: HTTP
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-south-1:800062177122:certificate/c8946f3e-fc93-4601-8572-043d7e44f2b5
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    alb.ingress.kubernetes.io/group.name: microservices-group
+    alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS13-1-2-2021-06
+    alb.ingress.kubernetes.io/healthcheck-path: /
+    alb.ingress.kubernetes.io/success-codes: '200,404'
+
+   
+    # Define default action to forward to "main" service
+    #alb.ingress.kubernetes.io/actions.default: '{"type":"forward","targetGroups":[{"serviceName":"main","servicePort":80}]}'
+    
+    # Header-based routing rules
+    alb.ingress.kubernetes.io/conditions.pm: >-
+      [{"field":"http-header","httpHeaderConfig":{"httpHeaderName":"servicepath","values":["3","124"]}}]
+    alb.ingress.kubernetes.io/conditions.gm: >-
+      [{"field":"http-header","httpHeaderConfig":{"httpHeaderName":"servicepath","values":["123"]}}]
+    alb.ingress.kubernetes.io/conditions.cm: >-
+      [{"field":"http-header","httpHeaderConfig":{"httpHeaderName":"servicepath","values":["5","203"]}}]
+    alb.ingress.kubernetes.io/conditions.sca: >-
+      [{"field":"http-header","httpHeaderConfig":{"httpHeaderName":"servicepath","values":["93"]}}]
+    alb.ingress.kubernetes.io/conditions.bulk: >-
+      [{"field":"http-header","httpHeaderConfig":{"httpHeaderName":"servicepath","values":["4"]}}]
+    alb.ingress.kubernetes.io/conditions.assets: >-
+      [{"field":"http-header","httpHeaderConfig":{"httpHeaderName":"servicepath","values":["125"]}}]
+    alb.ingress.kubernetes.io/conditions.invoice: >-
+      [{"field":"http-header","httpHeaderConfig":{"httpHeaderName":"servicepath","values":["67"]}}]
+    alb.ingress.kubernetes.io/conditions.store: >-
+      [{"field":"http-header","httpHeaderConfig":{"httpHeaderName":"servicepath","values":["68"]}}]
+    alb.ingress.kubernetes.io/conditions.dashboard: >-
+      [{"field":"http-header","httpHeaderConfig":{"httpHeaderName":"servicepath","values":["6"]}}]
+    alb.ingress.kubernetes.io/conditions.enquiry: >-
+      [{"field":"http-header","httpHeaderConfig":{"httpHeaderName":"servicepath","values":["43"]}}]
+    alb.ingress.kubernetes.io/conditions.utility: >-
+      [{"field":"http-header","httpHeaderConfig":{"httpHeaderName":"servicepath","values":["56"]}}]
+    alb.ingress.kubernetes.io/conditions.device: >-
+      [{"field":"http-header","httpHeaderConfig":{"httpHeaderName":"servicepath","values":["57"]}}]
+    alb.ingress.kubernetes.io/conditions.qr: >-
+      [{"field":"http-header","httpHeaderConfig":{"httpHeaderName":"servicepath","values":["10"]}}]
+    alb.ingress.kubernetes.io/conditions.cron: >-
+      [{"field":"http-header","httpHeaderConfig":{"httpHeaderName":"servicepath","values":["105"]}}]
+
+spec:
+  ingressClassName: alb
+  rules:
+
+
+    - host: api-eks.terotam.com
+      http:
+        paths:
+          # Default service using the default action
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: main
+                port:
+                  number: 80
+
+          # Header-based routing services
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: pm
+                port:
+                  number: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gm
+                port:
+                  number: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: cm
+                port:
+                  number: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: sca
+                port:
+                  number: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: bulk
+                port:
+                  number: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: assets
+                port:
+                  number: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: invoice
+                port:
+                  number: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: store
+                port:
+                  number: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: dashboard
+                port:
+                  number: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: enquiry
+                port:
+                  number: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: utility
+                port:
+                  number: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: device
+                port:
+                  number: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: qr
+                port:
+                  number: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: cron
+                port:
+                  number: 80
+
+    # === Extra host-based routing example ===
+    - host: api-puppeteer-eks-sandbox.terotam.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: puppeteer
+                port:
+                  number: 80
+
+    - host: dozzel-eks.terotam.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: dozzle-service
+                port:
+                  number: 80

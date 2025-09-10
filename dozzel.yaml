@@ -1,0 +1,138 @@
+# rbac.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pod-viewer
+  namespace: terotam
+---
+# clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pod-viewer-role
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "pods/log", "nodes"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["metrics.k8s.io"]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+---
+# clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pod-viewer-binding
+subjects:
+  - kind: ServiceAccount
+    name: pod-viewer
+    namespace: terotam
+roleRef:
+  kind: ClusterRole
+  name: pod-viewer-role
+  apiGroup: rbac.authorization.k8s.io
+---
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dozzle
+  namespace: terotam
+spec:
+  selector:
+    matchLabels:
+      app: dozzle
+  template:
+    metadata:
+      labels:
+        app: dozzle
+        environment: sandbox
+    spec:
+      serviceAccountName: pod-viewer
+      containers:
+        - name: dozzle
+          image: amir20/dozzle:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DOZZLE_MODE
+              value: "k8s"
+            # - name: DOZZLE_AUTH_PROVIDER
+            #   value: "simple"
+            - name: DOZZLE_AUTH_TTL
+              value: "10h"
+            - name: DOZZLE_ENABLE_ACTIONS
+              value: "true"
+            - name: DOZZLE_ENABLE_SHELL
+              value: "true"
+---
+# service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: dozzle-service
+  namespace: terotam
+spec:
+  type: ClusterIP
+  selector:
+    app: dozzle
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+
+
+######################## Note ####################
+
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: dozzle
+#   namespace: youtube
+# spec:
+#   selector:
+#     matchLabels:
+#       app: dozzle
+#   template:
+#     metadata:
+#       labels:
+#         app: dozzle
+#     spec:
+#       serviceAccountName: pod-viewer
+#       containers:
+#         - name: dozzle
+#           image: amir20/dozzle:latest
+#           ports:
+#             - containerPort: 8080
+#           env:
+#             - name: DOZZLE_MODE
+#               value: "k8s"
+#             - name: DOZZLE_AUTH_PROVIDER
+#               value: "simple"
+#             - name: DOZZLE_AUTH_TTL
+#               value: "10h"
+#             - name: DOZZLE_ENABLE_ACTIONS
+#               value: "true"
+#             - name: DOZZLE_ENABLE_SHELL
+#               value: "true"
+#           volumeMounts:
+#             - name: users
+#               mountPath: /data
+#               readOnly: true
+#       volumes:
+#         - name: users
+#           secret:
+#             secretName: dozzle-users
+
+
+# kubectl create secret generic dozzle-users \
+#   --from-file=users.yml=users.yml \
+#   -n youtube
+
+
+# users:
+#     admin:
+#         email: ""
+#         name: ""
+#         password: $2a$11$XS9YbWbKu/tDX9tB5pNmfuAKp0yKS4/YfbirXQaXYHukhGdKg1rwe
+#         filter: ""

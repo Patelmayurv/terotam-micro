@@ -1,0 +1,36 @@
+# Terraform state
+*.tfstate
+*.tfstate.*
+crash.log
+
+# Terraform plan
+*.tfplan
+
+# Sensitive files
+.terraform.lock.hcl
+#terraform.tfvars
+#*.tfvars
+
+# Terraform working directory
+.terraform/
+
+# Override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Local backend override
+#backend.tf
+#backend.tf.json
+
+# IDE/editor files
+*.swp
+*.bak
+*.tmp
+.idea/
+.vscode/
+.DS_Store
+
+# Terraform logs (optional)
+*.log

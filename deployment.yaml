@@ -1,0 +1,1183 @@
+# ================== cron ==================
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cron
+  namespace: terotam
+  labels:
+    app: cron
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: cron
+  template:
+    metadata:
+      labels:
+        app: cron
+        environment: sandbox  # for pdb
+    spec:
+      terminationGracePeriodSeconds: 30
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload
+                    operator: In
+                    values: [nodejs-microservice]
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: capacity
+                    operator: In
+                    values: [spot]
+      containers:
+        - name: cron
+          image: 800062177122.dkr.ecr.ap-south-1.amazonaws.com/cron:v6
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3001
+          resources:
+            requests:
+              cpu: "350m"
+              memory: "512Mi"
+            limits:
+              cpu: "800m"
+              memory: "1Gi"
+          envFrom:
+            - secretRef:
+                name: terotam-secret
+            - configMapRef:
+                name: cron-service-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cron
+  namespace: terotam
+spec:
+  selector:
+    app: cron
+  ports:
+    - port: 80
+      targetPort: 3001
+      protocol: TCP
+  type: ClusterIP
+
+# ================== pm ==================
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pm
+  namespace: terotam
+  labels:
+    app: pm
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: pm
+  template:
+    metadata:
+      labels:
+        app: pm
+        environment: sandbox  # for pdb
+    spec:
+      terminationGracePeriodSeconds: 30
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload
+                    operator: In
+                    values: [nodejs-microservice]
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: capacity
+                    operator: In
+                    values: [spot]
+      containers:
+        - name: pm
+          image: 800062177122.dkr.ecr.ap-south-1.amazonaws.com/pm:v6
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3002
+          resources:
+            requests:
+              cpu: "600m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+          envFrom:
+            - secretRef:
+                name: terotam-secret
+            - configMapRef:
+                name: pm-service-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pm
+  namespace: terotam
+spec:
+  selector:
+    app: pm
+  ports:
+    - port: 80
+      targetPort: 3002
+      protocol: TCP
+  type: ClusterIP
+
+# ================== gm ==================
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gm
+  namespace: terotam
+  labels:
+    app: gm
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: gm
+  template:
+    metadata:
+      labels:
+        app: gm
+        environment: sandbox  # for pdb
+    spec:
+      terminationGracePeriodSeconds: 30
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload
+                    operator: In
+                    values: [nodejs-microservice]
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: capacity
+                    operator: In
+                    values: [spot]
+      containers:
+        - name: gm
+          image: 800062177122.dkr.ecr.ap-south-1.amazonaws.com/gm:v6
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3003
+          resources:
+            requests:
+              cpu: "350m"
+              memory: "512Mi"
+            limits:
+              cpu: "900m"
+              memory: "1Gi"
+          envFrom:
+            - secretRef:
+                name: terotam-secret
+            - configMapRef:
+                name: gm-service-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gm
+  namespace: terotam
+spec:
+  selector:
+    app: gm
+  ports:
+    - port: 80
+      targetPort: 3003
+      protocol: TCP
+  type: ClusterIP
+
+# ================== cm ==================
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cm
+  namespace: terotam
+  labels:
+    app: cm
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: cm
+  template:
+    metadata:
+      labels:
+        app: cm
+        environment: sandbox  # for pdb
+    spec:
+      terminationGracePeriodSeconds: 30
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload
+                    operator: In
+                    values: [nodejs-microservice]
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: capacity
+                    operator: In
+                    values: [spot]
+      containers:
+        - name: cm
+          image: 800062177122.dkr.ecr.ap-south-1.amazonaws.com/cm:v6
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3004
+          resources:
+            requests:
+              cpu: "600m"
+              memory: "512Mi"
+            limits:
+              cpu: "1.5"
+              memory: "1Gi"
+          envFrom:
+            - secretRef:
+                name: terotam-secret
+            - configMapRef:
+                name: cm-service-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cm
+  namespace: terotam
+spec:
+  selector:
+    app: cm
+  ports:
+    - port: 80
+      targetPort: 3004
+      protocol: TCP
+  type: ClusterIP
+
+# ================== sca ==================
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sca
+  namespace: terotam
+  labels:
+    app: sca
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: sca
+  template:
+    metadata:
+      labels:
+        app: sca
+        environment: sandbox  # for pdb
+    spec:
+      terminationGracePeriodSeconds: 30
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload
+                    operator: In
+                    values: [nodejs-microservice]
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: capacity
+                    operator: In
+                    values: [spot]
+      containers:
+        - name: sca
+          image: 800062177122.dkr.ecr.ap-south-1.amazonaws.com/sca:v6
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3007
+          resources:
+            requests:
+              cpu: "350m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+          envFrom:
+            - secretRef:
+                name: terotam-secret
+            - configMapRef:
+                name: sca-service-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sca
+  namespace: terotam
+spec:
+  selector:
+    app: sca
+  ports:
+    - port: 80
+      targetPort: 3007
+      protocol: TCP
+  type: ClusterIP
+
+# ================== bulk ==================
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bulk
+  namespace: terotam
+  labels:
+    app: bulk
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: bulk
+  template:
+    metadata:
+      labels:
+        app: bulk
+        environment: sandbox  # for pdb
+    spec:
+      terminationGracePeriodSeconds: 30
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload
+                    operator: In
+                    values: [nodejs-microservice]
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: capacity
+                    operator: In
+                    values: [spot]
+      containers:
+        - name: bulk
+          image: 800062177122.dkr.ecr.ap-south-1.amazonaws.com/bulk:v6
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3008
+          resources:
+            requests:
+              cpu: "350m"
+              memory: "512Mi"
+            limits:
+              cpu: "1.5"
+              memory: "1Gi"
+          envFrom:
+            - secretRef:
+                name: terotam-secret
+            - configMapRef:
+                name: bulk-service-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bulk
+  namespace: terotam
+spec:
+  selector:
+    app: bulk
+  ports:
+    - port: 80
+      targetPort: 3008
+      protocol: TCP
+  type: ClusterIP
+
+# ================== assets ==================
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: assets
+  namespace: terotam
+  labels:
+    app: assets
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: assets
+  template:
+    metadata:
+      labels:
+        app: assets
+        environment: sandbox  # for pdb
+    spec:
+      terminationGracePeriodSeconds: 30
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload
+                    operator: In
+                    values: [nodejs-microservice]
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: capacity
+                    operator: In
+                    values: [spot]
+      containers:
+        - name: assets
+          image: 800062177122.dkr.ecr.ap-south-1.amazonaws.com/asset:v6
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3005
+          resources:
+            requests:
+              cpu: "350m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+          envFrom:
+            - secretRef:
+                name: terotam-secret
+            - configMapRef:
+                name: asset-service-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: assets
+  namespace: terotam
+spec:
+  selector:
+    app: assets
+  ports:
+    - port: 80
+      targetPort: 3005
+      protocol: TCP
+  type: ClusterIP
+
+# ================== invoice ==================
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: invoice
+  namespace: terotam
+  labels:
+    app: invoice
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: invoice
+  template:
+    metadata:
+      labels:
+        app: invoice
+        environment: sandbox  # for pdb
+    spec:
+      terminationGracePeriodSeconds: 30
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload
+                    operator: In
+                    values: [nodejs-microservice]
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: capacity
+                    operator: In
+                    values: [spot]
+      containers:
+        - name: invoice
+          image: 800062177122.dkr.ecr.ap-south-1.amazonaws.com/invoice:v6
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3009
+          resources:
+            requests:
+              cpu: "350m"
+              memory: "512Mi"
+            limits:
+              cpu: "700m"
+              memory: "1Gi"
+          envFrom:
+            - secretRef:
+                name: terotam-secret
+            - configMapRef:
+                name: invoice-service-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: invoice
+  namespace: terotam
+spec:
+  selector:
+    app: invoice
+  ports:
+    - port: 80
+      targetPort: 3009
+      protocol: TCP
+  type: ClusterIP
+
+# ================== store ==================
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: store
+  namespace: terotam
+  labels:
+    app: store
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: store
+  template:
+    metadata:
+      labels:
+        app: store
+        environment: sandbox  # for pdb
+    spec:
+      terminationGracePeriodSeconds: 30
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload
+                    operator: In
+                    values: [nodejs-microservice]
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: capacity
+                    operator: In
+                    values: [spot]
+      containers:
+        - name: store
+          image: 800062177122.dkr.ecr.ap-south-1.amazonaws.com/store:v6
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3010
+          resources:
+            requests:
+              cpu: "350m"
+              memory: "512Mi"
+            limits:
+              cpu: "700m"
+              memory: "1Gi"
+          envFrom:
+            - secretRef:
+                name: terotam-secret
+            - configMapRef:
+                name: store-service-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: store
+  namespace: terotam
+spec:
+  selector:
+    app: store
+  ports:
+    - port: 80
+      targetPort: 3010
+      protocol: TCP
+  type: ClusterIP
+
+# ================== puppeteer ==================
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: puppeteer
+  namespace: terotam
+  labels:
+    app: puppeteer
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: puppeteer
+  template:
+    metadata:
+      labels:
+        app: puppeteer
+        environment: sandbox  # for pdb
+    spec:
+      terminationGracePeriodSeconds: 30
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload
+                    operator: In
+                    values: [nodejs-microservice]
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: capacity
+                    operator: In
+                    values: [spot]
+      containers:
+        - name: puppeteer
+          image: 800062177122.dkr.ecr.ap-south-1.amazonaws.com/puppeter:v6
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3006
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "1.5"
+              memory: "2Gi"
+          envFrom:
+            - secretRef:
+                name: terotam-secret
+            - configMapRef:
+                name: pupp-service-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: puppeteer
+  namespace: terotam
+spec:
+  selector:
+    app: puppeteer
+  ports:
+    - port: 80
+      targetPort: 3006
+      protocol: TCP
+  type: ClusterIP
+
+# ================== dashboard ==================
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashboard
+  namespace: terotam
+  labels:
+    app: dashboard
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: dashboard
+  template:
+    metadata:
+      labels:
+        app: dashboard
+        environment: sandbox  # for pdb
+    spec:
+      terminationGracePeriodSeconds: 30
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload
+                    operator: In
+                    values: [nodejs-microservice]
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: capacity
+                    operator: In
+                    values: [spot]
+      containers:
+        - name: dashboard
+          image: 800062177122.dkr.ecr.ap-south-1.amazonaws.com/dashboard:v6
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3014
+          resources:
+            requests:
+              cpu: "350m"
+              memory: "512Mi"
+            limits:
+              cpu: "800m"
+              memory: "1Gi"
+          envFrom:
+            - secretRef:
+                name: terotam-secret
+            - configMapRef:
+                name: dashboard-service-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dashboard
+  namespace: terotam
+spec:
+  selector:
+    app: dashboard
+  ports:
+    - port: 80
+      targetPort: 3014
+      protocol: TCP
+  type: ClusterIP
+
+# ================== enquiry ==================
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: enquiry
+  namespace: terotam
+  labels:
+    app: enquiry
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: enquiry
+  template:
+    metadata:
+      labels:
+        app: enquiry
+        environment: sandbox  # for pdb
+    spec:
+      terminationGracePeriodSeconds: 30
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload
+                    operator: In
+                    values: [nodejs-microservice]
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: capacity
+                    operator: In
+                    values: [spot]
+      containers:
+        - name: enquiry
+          image: 800062177122.dkr.ecr.ap-south-1.amazonaws.com/enquiry:v6
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3015
+          resources:
+            requests:
+              cpu: "350m"
+              memory: "512Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+          envFrom:
+            - secretRef:
+                name: terotam-secret
+            - configMapRef:
+                name: enquery-service-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: enquiry
+  namespace: terotam
+spec:
+  selector:
+    app: enquiry
+  ports:
+    - port: 80
+      targetPort: 3015
+      protocol: TCP
+  type: ClusterIP
+
+# ================== utility ==================
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: utility
+  namespace: terotam
+  labels:
+    app: utility
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: utility
+  template:
+    metadata:
+      labels:
+        app: utility
+        environment: sandbox  # for pdb
+    spec:
+      terminationGracePeriodSeconds: 30
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload
+                    operator: In
+                    values: [nodejs-microservice]
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: capacity
+                    operator: In
+                    values: [spot]
+      containers:
+        - name: utility
+          image: 800062177122.dkr.ecr.ap-south-1.amazonaws.com/utility:v6
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3016
+          resources:
+            requests:
+              cpu: "350m"
+              memory: "512Mi"
+            limits:
+              cpu: "600m"
+              memory: "1Gi"
+          envFrom:
+            - secretRef:
+                name: terotam-secret
+            - configMapRef:
+                name: utility-service-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: utility
+  namespace: terotam
+spec:
+  selector:
+    app: utility
+  ports:
+    - port: 80
+      targetPort: 3016
+      protocol: TCP
+  type: ClusterIP
+
+# ================== device ==================
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: device
+  namespace: terotam
+  labels:
+    app: device
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: device
+  template:
+    metadata:
+      labels:
+        app: device
+        environment: sandbox  # for pdb
+    spec:
+      terminationGracePeriodSeconds: 30
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload
+                    operator: In
+                    values: [nodejs-microservice]
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: capacity
+                    operator: In
+                    values: [spot]
+      containers:
+        - name: device
+          image: 800062177122.dkr.ecr.ap-south-1.amazonaws.com/device:v6
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3017
+          resources:
+            requests:
+              cpu: "350m"
+              memory: "512Mi"
+            limits:
+              cpu: "600m"
+              memory: "1Gi"
+          envFrom:
+            - secretRef:
+                name: terotam-secret
+            - configMapRef:
+                name: device-service-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: device
+  namespace: terotam
+spec:
+  selector:
+    app: device
+  ports:
+    - port: 80
+      targetPort: 3017
+      protocol: TCP
+  type: ClusterIP
+
+# ================== qr ==================
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qr
+  namespace: terotam
+  labels:
+    app: qr
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: qr
+  template:
+    metadata:
+      labels:
+        app: qr
+        environment: sandbox  # for pdb
+    spec:
+      terminationGracePeriodSeconds: 30
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload
+                    operator: In
+                    values: [nodejs-microservice]
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: capacity
+                    operator: In
+                    values: [spot]
+      containers:
+        - name: qr
+          image: 800062177122.dkr.ecr.ap-south-1.amazonaws.com/publicqr:v6
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3018
+          resources:
+            requests:
+              cpu: "350m"
+              memory: "512Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+          envFrom:
+            - secretRef:
+                name: terotam-secret
+            - configMapRef:
+                name: publicqr-service-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qr
+  namespace: terotam
+spec:
+  selector:
+    app: qr
+  ports:
+    - port: 80
+      targetPort: 3018
+      protocol: TCP
+  type: ClusterIP
+
+# ================== main ==================
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: main
+  namespace: terotam
+  labels:
+    app: main
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: main
+  template:
+    metadata:
+      labels:
+        app: main
+        environment: sandbox  # for pdb
+    spec:
+      terminationGracePeriodSeconds: 30
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: workload
+                    operator: In
+                    values: [nodejs-microservice]
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: capacity
+                    operator: In
+                    values: [spot]
+      containers:
+        - name: main
+          image: 800062177122.dkr.ecr.ap-south-1.amazonaws.com/main:v6
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              cpu: "350m"
+              memory: "512Mi"
+            limits:
+              cpu: "800m"
+              memory: "1Gi"
+          envFrom:
+            - secretRef:
+                name: terotam-secret
+            - configMapRef:
+                name: main-service-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: main
+  namespace: terotam
+spec:
+  selector:
+    app: main
+  ports:
+    - port: 80
+      targetPort: 3000
+      protocol: TCP
+  type: ClusterIP
