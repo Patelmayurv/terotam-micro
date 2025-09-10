@@ -1,10 +1,216 @@
+# apiVersion: policy/v1
+# kind: PodDisruptionBudget
+# metadata:
+#   name: all-services-pdb
+#   namespace: terotam
+# spec:
+#   minAvailable: 1
+#   selector:
+#     matchLabels:
+#       environment: sandbox  # Use a common label all services share
+
+
+# ========== PDBs for all services ==========
+---
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: all-services-pdb
+  name: cron-pdb
   namespace: terotam
 spec:
   minAvailable: 1
   selector:
     matchLabels:
-      environment: sandbox  # Use a common label all services share
+      app: cron
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pm-pdb
+  namespace: terotam
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: pm
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: gm-pdb
+  namespace: terotam
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: gm
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: cm-pdb
+  namespace: terotam
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: cm
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: sca-pdb
+  namespace: terotam
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: sca
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: bulk-pdb
+  namespace: terotam
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: bulk
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: assets-pdb
+  namespace: terotam
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: assets
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: invoice-pdb
+  namespace: terotam
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: invoice
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: store-pdb
+  namespace: terotam
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: store
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: puppeteer-pdb
+  namespace: terotam
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: puppeteer
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: dashboard-pdb
+  namespace: terotam
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: dashboard
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: enquiry-pdb
+  namespace: terotam
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: enquiry
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: utility-pdb
+  namespace: terotam
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: utility
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: device-pdb
+  namespace: terotam
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: device
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: qr-pdb
+  namespace: terotam
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: qr
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: main-pdb
+  namespace: terotam
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: main
+
+
+---
+
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: redis-pdb
+  namespace: terotam
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: redis
+
+---
+
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: dozzle-pdb
+  namespace: terotam
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: dozzle

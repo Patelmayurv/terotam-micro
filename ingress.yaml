@@ -210,6 +210,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: dozzle-service
+                name: dozzle
                 port:
                   number: 80
