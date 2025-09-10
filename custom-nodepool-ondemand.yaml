@@ -1,0 +1,113 @@
+
+#######################################################################################
+# EKS Auto Mode Custom Nodepool Conf SPOT And ON DEMAND
+###################################################################################
+
+# apiVersion: karpenter.sh/v1
+# kind: NodePool
+# metadata:
+#   name: primary-nodepool
+# spec:
+#   weight: 50
+#   disruption:
+#     consolidationPolicy: WhenEmptyOrUnderutilized
+#     consolidateAfter: 5m
+#   template:
+#     metadata:
+#       labels:
+#         workload: nodejs-microservice
+#     spec:
+#       expireAfter: 336h
+#       nodeClassRef:
+#         group: eks.amazonaws.com
+#         kind: NodeClass
+#         name: default
+#       requirements:
+#       - key: karpenter.sh/capacity-type
+#         operator: In
+#         values: ["spot", "on-demand"]
+#       - key: eks.amazonaws.com/instance-category
+#         operator: In
+#         values: ["c", "m", "r"]
+#       - key: eks.amazonaws.com/instance-generation
+#         operator: Gt
+#         values: ["5"]
+#       - key: kubernetes.io/arch
+#         operator: In
+#         values: ["amd64"]
+#       - key: kubernetes.io/os
+#         operator: In
+#         values: ["linux"]
+#       - key: karpenter.k8s.aws/instance-cpu
+#         operator: Gt
+#         values: ["200"]
+#       - key: karpenter.k8s.aws/instance-memory
+#         operator: Gt
+#         values: ["512"]
+#       terminationGracePeriod: 24h0m0s
+
+
+
+
+
+
+#######################################################################################
+# EKS Auto Mode Custom Nodepool Conf ON DEMAND 
+###################################################################################
+
+
+apiVersion: karpenter.sh/v1
+kind: NodePool
+metadata:
+  name: ondemand-nodepool
+spec:
+  weight: 20 # lower priority than Spot
+  disruption:
+    consolidationPolicy: WhenEmptyOrUnderutilized
+    consolidateAfter: 10m
+  template:
+    metadata:
+      labels:
+        workload: nodejs-microservice
+        capacity: on-demand
+    spec:
+      expireAfter: 336h
+      nodeClassRef:
+        group: eks.amazonaws.com
+        kind: NodeClass
+        name: default
+      requirements:
+      - key: karpenter.sh/capacity-type
+        operator: In
+        values: ["on-demand"]
+      - key: eks.amazonaws.com/instance-category
+        operator: In
+        values: ["c", "m", "r"]
+      - key: eks.amazonaws.com/instance-generation
+        operator: Gt
+        values: ["5"]
+      # - key: eks.amazonaws.com/instance-size
+      #   operator: In
+      #   values: ["2xlarge", "4xlarge", "8xlarge", "16xlarge", "32xlarge"]
+      - key: kubernetes.io/arch
+        operator: In
+        values: ["amd64"]
+      - key: kubernetes.io/os
+        operator: In
+        values: ["linux"]
+      terminationGracePeriod: 5m
+
+
+#######################################################################
+#  NOTES
+#########################################################################
+
+# Split into 2 pools: one Spot, one On-Demand.
+
+# Weighting: Spot has weight: 80, On-Demand weight: 20. → Karpenter tries Spot first, falls back to On-Demand if Spot unavailable.
+
+# TerminationGracePeriod: shortened from 24h to 5m (production-safe).
+
+# Instance-size filtering: Instead of CPU/Memory (confusing), we restrict to practical instance sizes: 2xlarge → 32xlarge.
+
+# Labels: Added capacity=spot and capacity=on-demand → makes it easy to schedule workloads depending on stability/cost needs.
