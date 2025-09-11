@@ -1,3 +1,30 @@
+# // Health endpoints for K8s probes
+# app.get('/healthz', (req, res) => {
+#   res.status(200).send('OK');   // Liveness probe
+# });
+
+# app.get('/readyz', (req, res) => {
+#   // Optionally check DB/external services here
+#   res.status(200).send('READY');  // Readiness probe
+# });
+
+
+# livenessProbe:
+#   httpGet:
+#     path: /healthz
+#     port: 3005
+#   initialDelaySeconds: 10
+#   periodSeconds: 15
+
+# readinessProbe:
+#   httpGet:
+#     path: /readyz
+#     port: 3005
+#   initialDelaySeconds: 5
+#   periodSeconds: 10
+
+
+
 # ================== cron ==================
 ---
 apiVersion: apps/v1

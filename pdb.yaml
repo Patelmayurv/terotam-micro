@@ -22,6 +22,8 @@ spec:
   selector:
     matchLabels:
       app: cron
+      environment: sandbox
+
 ---
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -33,6 +35,7 @@ spec:
   selector:
     matchLabels:
       app: pm
+      environment: sandbox
 ---
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -44,6 +47,7 @@ spec:
   selector:
     matchLabels:
       app: gm
+      environment: sandbox
 ---
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -55,6 +59,7 @@ spec:
   selector:
     matchLabels:
       app: cm
+      environment: sandbox
 ---
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -66,6 +71,7 @@ spec:
   selector:
     matchLabels:
       app: sca
+      environment: sandbox
 ---
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -77,6 +83,7 @@ spec:
   selector:
     matchLabels:
       app: bulk
+      environment: sandbox
 ---
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -88,6 +95,7 @@ spec:
   selector:
     matchLabels:
       app: assets
+      environment: sandbox
 ---
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -99,6 +107,7 @@ spec:
   selector:
     matchLabels:
       app: invoice
+      environment: sandbox
 ---
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -110,6 +119,7 @@ spec:
   selector:
     matchLabels:
       app: store
+      environment: sandbox
 ---
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -121,6 +131,7 @@ spec:
   selector:
     matchLabels:
       app: puppeteer
+      environment: sandbox
 ---
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -132,6 +143,7 @@ spec:
   selector:
     matchLabels:
       app: dashboard
+      environment: sandbox
 ---
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -143,6 +155,7 @@ spec:
   selector:
     matchLabels:
       app: enquiry
+      environment: sandbox
 ---
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -154,6 +167,7 @@ spec:
   selector:
     matchLabels:
       app: utility
+      environment: sandbox
 ---
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -165,6 +179,7 @@ spec:
   selector:
     matchLabels:
       app: device
+      environment: sandbox
 ---
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -176,6 +191,7 @@ spec:
   selector:
     matchLabels:
       app: qr
+      environment: sandbox
 ---
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -187,6 +203,7 @@ spec:
   selector:
     matchLabels:
       app: main
+      environment: sandbox
 
 
 ---
@@ -201,6 +218,7 @@ spec:
   selector:
     matchLabels:
       app: redis
+      environment: sandbox
 
 ---
 
@@ -214,3 +232,4 @@ spec:
   selector:
     matchLabels:
       app: dozzle
+      environment: sandbox
