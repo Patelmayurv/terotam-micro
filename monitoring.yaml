@@ -168,3 +168,19 @@ server {
     ssl_certificate_key /home/ubuntu/ssl/terotam-2024.key;
     ssl_protocols       TLSv1.2 TLSv1.3;
 }
+
+
+
+[OUTPUT]
+  Name            http
+  Match           *
+  URI             /api/default/default/_json
+  Host            monitoring.aavgo.com
+  Port            443
+  tls             On
+  Format          json
+  Json_date_key   _timestamp
+  Json_date_format iso8601
+  HTTP_User       admin@example.com
+  HTTP_Passwd     2jCeEMWOurPgp8BD
+  compress        gzip
