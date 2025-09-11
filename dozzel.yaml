@@ -57,13 +57,13 @@ spec:
           env:
             - name: DOZZLE_MODE
               value: "k8s"
-            - name: DOZZLE_AUTH_PROVIDER
-              value: "simple"
-            - name: DOZZLE_SIMPLE_USERS
-              valueFrom:
-                secretKeyRef:
-                  name: dozzle-auth
-                  key: users
+            # - name: DOZZLE_AUTH_PROVIDER
+            #   value: "simple"
+            # - name: DOZZLE_SIMPLE_USERS
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: dozzle-auth
+            #       key: users
             - name: DOZZLE_AUTH_TTL
               value: "10h"
             - name: DOZZLE_ENABLE_ACTIONS

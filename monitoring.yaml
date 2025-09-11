@@ -1,0 +1,118 @@
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: openobserve
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: ebs.csi.eks.amazonaws.com
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
+parameters:
+  type: gp3
+  fsType: ext4
+  encrypted: "true"
+reclaimPolicy: Retain
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: openobserve-pvc
+#   namespace: openobserve
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   storageClassName: ebs-auto-optimized
+#   resources:
+#     requests:
+#       storage: 25Gi
+
+# -------------------------------
+# Headless Service (required for StatefulSets)
+# Provides stable DNS for OpenObserve pods
+# -------------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: openobserve
+  namespace: terotam
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80         # Service port exposed to ALB
+      targetPort: 5080 # Pod containerPort
+      name: http
+  selector:
+    app: openobserve
+
+---
+# -------------------------------
+# StatefulSet for OpenObserve
+# Manages pods with persistent storage
+# -------------------------------
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: openobserve
+  namespace: terotam
+  labels:
+    app: openobserve
+spec:
+  serviceName: openobserve   # must match headless service
+  replicas: 1                # can scale up later
+  podManagementPolicy: Parallel  # starts pods in parallel instead of sequential
+  updateStrategy:
+    type: RollingUpdate 
+  selector:
+    matchLabels:
+      app: openobserve
+  template:
+    metadata:
+      labels:
+        app: openobserve
+    spec:
+      # Security context ensures pods do not run as root
+      securityContext:
+        fsGroup: 2000
+        runAsUser: 10000
+        runAsGroup: 3000
+        runAsNonRoot: true
+      containers:
+        - name: openobserve
+          image: o2cr.ai/openobserve/openobserve:latest
+          imagePullPolicy: Always
+          env:
+            - name: ZO_ROOT_USER_EMAIL
+              value: "mayur.patel@aavgo.com"
+            - name: ZO_ROOT_USER_PASSWORD
+              value: "Complexpass#123"
+            - name: ZO_DATA_DIR
+              value: "/data"
+          resources:
+            # Requests: what the pod is guaranteed
+            # Limits: maximum resources allowed
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: 2
+              memory: 2Gi
+          ports:
+            - containerPort: 5080
+              name: http
+          volumeMounts:
+            - name: data
+              mountPath: /data
+  # -------------------------------
+  # VolumeClaimTemplates
+  # Ensures each pod in StatefulSet gets its own PVC automatically
+  # -------------------------------
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: openobserve
+      resources:
+        requests:
+          storage: 25Gi
