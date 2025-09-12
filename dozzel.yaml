@@ -93,9 +93,9 @@ spec:
             - name: DOZZLE_AUTH_TTL
               value: "10h"
             - name: DOZZLE_ENABLE_ACTIONS
-              value: "true"
+              value: "false"
             - name: DOZZLE_ENABLE_SHELL
-              value: "true"
+              value: "false"
           volumeMounts:
             - name: users-file
               mountPath: /data/users.yml
@@ -114,6 +114,10 @@ spec:
             items:
               - key: users.yml
                 path: users.yml
+    securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 2000
 ---
 # service.yaml
 apiVersion: v1
