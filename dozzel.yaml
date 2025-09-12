@@ -1,3 +1,34 @@
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: dozzle-auth
+#   namespace: terotam
+# type: Opaque
+# stringData:
+#   users: |
+#     admin:astics123
+#     mayur:mysecurepassword
+# Secret with users
+apiVersion: v1
+kind: Secret
+metadata:
+  name: dozzle-auth
+  namespace: terotam
+type: Opaque
+stringData:
+  users.yml: |
+    users:
+      admin:
+        email: admin@example.com
+        name: Admin
+        password: "$2a$11$XS9YbWbKu/tDX9tB5pNmfuAKp0yKS4/YfbirXQaXYHukhGdKg1rwe" #astics123
+        filter:
+      mayur:
+        email: mayur@example.com
+        name: Mayur
+        password: "mysecurepassword"
+        filter:
+---
 # rbac.yaml
 apiVersion: v1
 kind: ServiceAccount
@@ -57,19 +88,32 @@ spec:
           env:
             - name: DOZZLE_MODE
               value: "k8s"
-            # - name: DOZZLE_AUTH_PROVIDER
-            #   value: "simple"
-            # - name: DOZZLE_SIMPLE_USERS
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: dozzle-auth
-            #       key: users
+            - name: DOZZLE_AUTH_PROVIDER
+              value: "simple"
             - name: DOZZLE_AUTH_TTL
               value: "10h"
             - name: DOZZLE_ENABLE_ACTIONS
               value: "true"
             - name: DOZZLE_ENABLE_SHELL
               value: "true"
+          volumeMounts:
+            - name: users-file
+              mountPath: /data/users.yml
+              subPath: users.yml
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+    volumes:
+        - name: users-file
+          secret:
+            secretName: dozzle-auth
+            items:
+              - key: users.yml
+                path: users.yml
 ---
 # service.yaml
 apiVersion: v1
@@ -87,47 +131,8 @@ spec:
       protocol: TCP
 
 
-######################## Note ####################
 
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: dozzle
-#   namespace: youtube
-# spec:
-#   selector:
-#     matchLabels:
-#       app: dozzle
-#   template:
-#     metadata:
-#       labels:
-#         app: dozzle
-#     spec:
-#       serviceAccountName: pod-viewer
-#       containers:
-#         - name: dozzle
-#           image: amir20/dozzle:latest
-#           ports:
-#             - containerPort: 8080
-#           env:
-#             - name: DOZZLE_MODE
-#               value: "k8s"
-#             - name: DOZZLE_AUTH_PROVIDER
-#               value: "simple"
-#             - name: DOZZLE_AUTH_TTL
-#               value: "10h"
-#             - name: DOZZLE_ENABLE_ACTIONS
-#               value: "true"
-#             - name: DOZZLE_ENABLE_SHELL
-#               value: "true"
-#           volumeMounts:
-#             - name: users
-#               mountPath: /data
-#               readOnly: true
-#       volumes:
-#         - name: users
-#           secret:
-#             secretName: dozzle-users
+
 
 
 # kubectl create secret generic dozzle-users \
@@ -141,3 +146,12 @@ spec:
 #         name: ""
 #         password: $2a$11$XS9YbWbKu/tDX9tB5pNmfuAKp0yKS4/YfbirXQaXYHukhGdKg1rwe
 #         filter: ""
+
+#docker run --rm amir20/dozzle dozzle generate astics123
+
+
+# #kubectl create secret generic dozzle-users \
+#   --from-file=users.yml \
+#   -n logging
+
+

@@ -1,0 +1,6 @@
+users:
+  admin:
+    email: mayur.patel@aavgo.com
+    name: mayur
+    password: $2a$11$XS9YbWbKu/tDX9tB5pNmfuAKp0yKS4/YfbirXQaXYHukhGdKg1rwe
+    filter:
