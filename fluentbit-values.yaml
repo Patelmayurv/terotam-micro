@@ -1,7 +1,7 @@
 serviceAccount:
   create: true
   name: fluent-bit
-  automountServiceAccountToken: false
+#  automountServiceAccountToken: false
 
 rbac:
   create: true
@@ -26,7 +26,7 @@ podDisruptionBudget:
 
 tolerations:
   - operator: Exists
-  
+
 # tolerations:
 #   - key: CriticalAddonsOnly
 #     operator: Equal
@@ -58,13 +58,8 @@ config:
         Tag               kube.*
         Mem_Buf_Limit     5MB
         Skip_Long_Lines   On
-        storage.type      filesystem
 
-    [INPUT]
-        Name              systemd
-        Tag               host.*
-        Systemd_Filter    _SYSTEMD_UNIT=kubelet.service
-        Read_From_Tail    On
+    
 
   filters: |
     [FILTER]
@@ -95,17 +90,17 @@ config:
         Name                    http
         Match                   *
         URI                     /api/default/default/_json
-        Host                    monitoring.aavgo.com
+        Host                    auth.aavgo.com
         Port                    443
         tls                     On
         Format                  json
         Json_date_key           _timestamp
         Json_date_format        iso8601
         HTTP_User               admin@example.com
-        HTTP_Passwd             2jCeEMWOurPgp8BD
+        HTTP_Passwd             SuperSecret123
         compress                gzip
         Retry_Limit             False
-        Batch_Size              500
+        
 
   customParsers: |
     [PARSER]
@@ -131,3 +126,13 @@ config:
 # helm upgrade fluent-bit fluent/fluent-bit \
 #   --namespace logging \
 #   -f fluentbit-values.yaml
+
+
+# [INPUT]
+    #     Name              systemd
+    #     Tag               host.*
+    #     Systemd_Filter    _SYSTEMD_UNIT=kubelet.service
+    #     Read_From_Tail    On
+
+
+  #  helm uninstall fluent-bit -n logging

@@ -338,7 +338,7 @@ data:
     ####################################################################
     # 📊 KUBERNETES / CONTAINER METRICS
     ####################################################################
-    [[inputs.kubernetes]]
+     [[inputs.kubernetes]]
       url = "https://$HOSTNAME:10250"
       bearer_token = "/var/run/secrets/kubernetes.io/serviceaccount/token"
       insecure_skip_verify = true
@@ -347,8 +347,8 @@ data:
     ####################################################################
     # 📤 OUTPUT TO OPENOBSERVE (JSON)
     ####################################################################
-    [[outputs.http]]
-      url = "https://monitoring.aavgo.com/api/default/default/_json"
+   [[outputs.http]]
+      url = "https://auth.aavgo.com/api/default/default/_json"
       method = "POST"
       data_format = "json"
       username = "admin@example.com"
