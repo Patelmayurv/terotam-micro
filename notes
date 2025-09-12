@@ -6,3 +6,12 @@ That’s by design → ensures deterministic installs.
  
 we need to one time use this command 
  
+ 1- namespace.yaml
+ 2- spot-ondeman.yaml
+ 3- secret.yaml
+ 4- deployment.yaml
+ 5- ingress.yaml
+ 6- hpa.yaml
+ 7- pdb.yaml
+ 8- redi.yaml
+ 9- dozzel.yaml
