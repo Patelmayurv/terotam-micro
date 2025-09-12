@@ -24,6 +24,9 @@ resources:
 podDisruptionBudget:
   maxUnavailable: 0
 
+tolerations:
+  - operator: Exists
+  
 # tolerations:
 #   - key: CriticalAddonsOnly
 #     operator: Equal
