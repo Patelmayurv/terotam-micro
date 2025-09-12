@@ -88,6 +88,8 @@ spec:
           env:
             - name: DOZZLE_MODE
               value: "k8s"
+            - name: DOZZLE_HOSTNAME 
+              value: "terotam"
             - name: DOZZLE_AUTH_PROVIDER
               value: "simple"
             - name: DOZZLE_AUTH_TTL
