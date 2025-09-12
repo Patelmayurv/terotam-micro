@@ -188,7 +188,7 @@ server {
 
 ############################### telegraf send to open observed ####################3
 
-
+---
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
@@ -201,7 +201,7 @@ spec:
       app: telegraf
 
 
-
+---
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -347,7 +347,7 @@ data:
     ####################################################################
     # 📤 OUTPUT TO OPENOBSERVE (JSON)
     ####################################################################
-   [[outputs.http]]
+    [[outputs.http]]
       url = "https://auth.aavgo.com/api/default/default/_json"
       method = "POST"
       data_format = "json"
